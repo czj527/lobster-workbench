@@ -7,6 +7,8 @@ import KanbanBoard from "./KanbanBoard";
 import ProjectModal from "./ProjectModal";
 import { showToast, ToastContainer } from "./Toast";
 import StatsWidgets from "./StatsWidgets";
+import AISummary from './AISummary';
+import TaskSuggestions from './TaskSuggestions';
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 
 interface Project {
@@ -420,6 +422,12 @@ export default function ProjectDetailClient({ project: initialProject, initialTa
             projectId={project.id}
             initialTasks={filteredTasks}
           />
+        </div>
+
+        {/* AI 摘要和智能建议 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <AISummary projectId={project.id} projectName={project.name} />
+          <TaskSuggestions projectId={project.id} />
         </div>
 
         {/* 项目描述 */}
