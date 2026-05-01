@@ -90,7 +90,7 @@ export default function RealtimeIndicator() {
         <span className={`relative inline-flex rounded-full h-2 w-2 ${config.dotColor}`}></span>
       </span>
       {lastUpdate && status === 'connected' && (
-        <span className="text-slate-500 ml-1">
+        <span className="text-[var(--text-muted)] ml-1">
           {formatLastUpdate()}
         </span>
       )}

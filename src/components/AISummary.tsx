@@ -187,7 +187,7 @@ export default function AISummary({ projectId, projectName, compact = false }: A
               <p className="text-red-500 mb-4">{error}</p>
               <button
                 onClick={generateSummary}
-                className="px-4 py-2 bg-slate-700 text-white rounded-lg font-medium hover:bg-slate-600 transition-colors"
+                className="px-4 py-2 bg-[var(--card-bg)] text-[var(--text-primary)] rounded-lg font-medium hover:bg-[var(--card-bg-hover)] transition-colors"
               >
                 重试
               </button>

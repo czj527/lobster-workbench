@@ -145,7 +145,7 @@ export default function QuickAdd({ projectId, projects = [], onTaskCreated }: Qu
       case 1: return { text: '高优先级', color: 'text-red-500 bg-red-500/10' }
       case 2: return { text: '中优先级', color: 'text-amber-500 bg-amber-500/10' }
       case 3: return { text: '低优先级', color: 'text-green-500 bg-green-500/10' }
-      default: return { text: '默认', color: 'text-gray-500 bg-gray-500/10' }
+      default: return { text: '默认', color: 'text-[var(--text-muted)] bg-[var(--list-item-bg)]' }
     }
   }
 

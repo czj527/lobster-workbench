@@ -101,7 +101,7 @@ export default function GitHubStatus({ compact = false }: GitHubStatusProps) {
                 <span className="flex items-center gap-1"><Star className="w-3 h-3 text-yellow-500" />{repo.stargazers_count}</span>
                 <span className="flex items-center gap-1"><GitPullRequest className="w-3 h-3 text-green-500" />{repo.forks_count}</span>
                 <span className="flex items-center gap-1"><AlertCircle className="w-3 h-3 text-orange-500" />{repo.open_issues_count}</span>
-                {repo.language && <span className="px-1.5 py-0.5 bg-slate-500/20 rounded text-[10px]">{repo.language}</span>}
+                {repo.language && <span className="px-1.5 py-0.5 bg-[var(--list-item-bg)] rounded text-[10px]">{repo.language}</span>}
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs text-theme-muted flex items-center gap-1"><Activity className="w-3 h-3" />7天趋势</span>

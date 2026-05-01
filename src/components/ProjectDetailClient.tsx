@@ -208,7 +208,7 @@ export default function ProjectDetailClient({ project: initialProject, initialTa
 
   // 状态图标
   const statusIcons: Record<string, React.ReactNode> = {
-    todo: <Clock className="w-4 h-4 text-slate-500" />,
+    todo: <Clock className="w-4 h-4 text-[var(--text-muted)]" />,
     in_progress: <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />,
     testing: <Clock className="w-4 h-4 text-amber-500" />,
     done: <CheckCircle2 className="w-4 h-4 text-green-500" />,

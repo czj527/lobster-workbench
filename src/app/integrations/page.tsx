@@ -51,7 +51,7 @@ export default function IntegrationsPage() {
   const StatusIcon = ({ status }: { status: IntegrationService["status"] }) => {
     switch (status) {
       case "connected": return <CheckCircle2 className="w-4 h-4 text-green-500" />
-      case "disconnected": return <XCircle className="w-4 h-4 text-gray-400" />
+      case "disconnected": return <XCircle className="w-4 h-4 text-[var(--text-secondary)]" />
       case "connecting": return <RefreshCw className="w-4 h-4 text-yellow-500 animate-spin" />
       case "error": return <AlertCircle className="w-4 h-4 text-red-500" />
     }

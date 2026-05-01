@@ -27,8 +27,8 @@ const STATUS_CONFIG = {
     shortLabel: "待办",
     icon: AlertCircle,
     color: "text-theme-muted",
-    bg: "bg-slate-100 dark:bg-slate-500/20",
-    borderColor: "border-slate-200 dark:border-slate-600",
+    bg: "bg-[var(--list-item-bg)]",
+    borderColor: "border-[var(--border-light)]",
   },
   in_progress: {
     label: "🔨 进行中",

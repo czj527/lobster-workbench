@@ -86,7 +86,7 @@ export default function ProjectHealthBadge({ projectId, updatedAt }: ProjectHeal
     good: { icon: CheckCircle2, color: "text-green-500", bg: "bg-green-500/20", label: "健康" },
     warning: { icon: AlertCircle, color: "text-amber-500", bg: "bg-amber-500/20", label: "注意" },
     critical: { icon: AlertCircle, color: "text-red-500", bg: "bg-red-500/20", label: "危险" },
-    inactive: { icon: Clock, color: "text-slate-500", bg: "bg-slate-500/20", label: "闲置" },
+    inactive: { icon: Clock, color: "text-[var(--text-muted)]", bg: "bg-[var(--list-item-bg)]", label: "闲置" },
   };
 
   const { icon: Icon, color, bg, label } = config[health];

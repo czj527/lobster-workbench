@@ -202,7 +202,7 @@ export default function TaskSuggestions({ projectId, compact = false }: TaskSugg
                       </h4>
                       <button
                         onClick={() => dismissSuggestion(suggestion.id)}
-                        className="p-1 rounded hover:bg-white/10 transition-colors flex-shrink-0"
+                        className="p-1 rounded hover:bg-[var(--list-item-bg-hover)] transition-colors flex-shrink-0"
                       >
                         <X className="w-3 h-3 text-theme-muted" />
                       </button>

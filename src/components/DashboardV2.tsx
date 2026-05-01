@@ -349,7 +349,7 @@ export default function DashboardV2({ projects: initialProjects, activities: ini
                       </span>
                       <span className="text-theme-primary font-medium">{project.progress || 0}%</span>
                     </div>
-                    <div className="w-full h-1.5 md:h-2 bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden">
+                    <div className="w-full h-1.5 md:h-2 bg-[var(--list-item-bg)] rounded-full overflow-hidden">
                       <div 
                         className="h-full rounded-full progress-gradient" 
                         style={{ width: `${project.progress || 0}%` }}

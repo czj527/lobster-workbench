@@ -99,7 +99,7 @@ export default function LiveStatus() {
   const statusIcon = {
     working: <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />,
     thinking: <div className="w-3 h-3 rounded-full bg-blue-500 animate-pulse" />,
-    idle: <div className="w-3 h-3 rounded-full bg-gray-400" />
+    idle: <div className="w-3 h-3 rounded-full bg-[var(--text-secondary)]" />
   }
 
   // 状态文字
@@ -113,24 +113,24 @@ export default function LiveStatus() {
   const statusColor = {
     working: 'text-green-500',
     thinking: 'text-blue-500',
-    idle: 'text-gray-400'
+    idle: 'text-[var(--text-secondary)]'
   }
 
   // 步骤图标
   const stepIcon = {
     done: <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />,
     doing: <Loader2 className="w-4 h-4 text-sky-500 animate-spin flex-shrink-0" />,
-    todo: <Circle className="w-4 h-4 text-gray-400 flex-shrink-0" />
+    todo: <Circle className="w-4 h-4 text-[var(--text-secondary)] flex-shrink-0" />
   }
 
   if (loading) {
     return (
       <div className="glass-card p-4 animate-pulse">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700" />
+          <div className="w-8 h-8 rounded-full bg-[var(--list-item-bg)]" />
           <div className="flex-1">
-            <div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded mb-2" />
-            <div className="h-3 w-40 bg-slate-200 dark:bg-slate-700 rounded" />
+            <div className="h-4 w-24 bg-[var(--list-item-bg)] rounded mb-2" />
+            <div className="h-3 w-40 bg-[var(--list-item-bg)] rounded" />
           </div>
         </div>
       </div>
