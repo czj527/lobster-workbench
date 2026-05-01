@@ -39,15 +39,11 @@ export async function GET(request: NextRequest) {
     const { data: activities } = await supabase
       .from('activity_log')
       .select('*')
-      .eq('metadata->project_id', projectId)
       .order('created_at', { ascending: false })
       .limit(20)
 
-    // 获取 GitHub 仓库信息
-    const githubRepos = await fetchGitHubRepos(project.name)
-
     // 生成 Markdown 报告
-    const markdown = generateMarkdownReport(project, tasks || [], activities || [], githubRepos)
+    const markdown = generateMarkdownReport(project, tasks || [], activities || [])
 
     // 返回 Markdown 文件
     return new NextResponse(markdown, {
@@ -58,40 +54,7 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('生成报告失败:', error)
-    return NextResponse.json({ error: '生成报告失败' }, { status: 500 })
-  }
-}
-
-interface GitHubRepo {
-  name: string;
-  description: string | null;
-  stargazers_count: number;
-  forks_count: number;
-  language: string | null;
-  html_url: string;
-  pushed_at: string;
-}
-
-async function fetchGitHubRepos(projectName: string): Promise<GitHubRepo[]> {
-  try {
-    const GITHUB_TOKEN = process.env.GITHUB_TOKEN || ''
-    const headers: HeadersInit = {
-      Accept: 'application/vnd.github.v3+json',
-      'X-GitHub-Api-Version': '2022-11-28',
-    }
-    if (GITHUB_TOKEN) {
-      headers.Authorization = `Bearer ${GITHUB_TOKEN}`
-    }
-
-    const response = await fetch(
-      `https://api.github.com/search/repositories?q=${encodeURIComponent(projectName)}+user:czj527`,
-      { headers }
-    )
-    if (!response.ok) return []
-    const data = await response.json()
-    return data.items || []
-  } catch {
-    return []
+    return NextResponse.json({ error: '生成报告失败', details: String(error) }, { status: 500 })
   }
 }
 
@@ -127,8 +90,7 @@ interface Activity {
 function generateMarkdownReport(
   project: Project,
   tasks: Task[],
-  activities: Activity[],
-  githubRepos: GitHubRepo[]
+  activities: Activity[]
 ): string {
   const statusMap: Record<string, string> = {
     planning: '规划中',
@@ -227,20 +189,6 @@ ${project.description}
     markdown += `> 暂无任务
 
 `
-  }
-
-  if (githubRepos.length > 0) {
-    markdown += `## GitHub 仓库
-
-`
-    githubRepos.forEach(repo => {
-      markdown += `- **${repo.name}** (${repo.html_url})
-  - ${repo.description || '暂无描述'}
-  - 星标: ${repo.stargazers_count} | 分支: ${repo.forks_count} | 语言: ${repo.language || '未知'}
-  - 最后更新: ${new Date(repo.pushed_at).toLocaleString('zh-CN')}
-
-`
-    })
   }
 
   if (activities.length > 0) {
