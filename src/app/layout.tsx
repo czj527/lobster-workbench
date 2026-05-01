@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Link from "next/link";
+import { Home, FolderKanban, Activity, Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "🦞 龙虾工作台",
+  title: "💙 蓝的工作台",
   description: "可视化项目管理与任务追踪",
 };
 
@@ -14,30 +15,66 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
-      <body className="min-h-screen bg-gray-50">
-        {/* 顶部导航 */}
-        <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between h-16">
-              <div className="flex items-center">
-                <span className="text-2xl mr-8">🦞</span>
-                <div className="flex space-x-8">
-                  <Link href="/" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 border-b-2 border-indigo-500">
-                    首页
-                  </Link>
-                  <Link href="/projects" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900 border-b-2 border-transparent hover:border-gray-300">
-                    项目
-                  </Link>
+      <body className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950">
+        {/* 粒子背景 */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="particles"></div>
+        </div>
+        
+        <div className="flex min-h-screen relative z-10">
+          {/* 侧边栏 */}
+          <aside className="fixed left-0 top-0 h-full w-64 glass-sidebar">
+            <div className="flex flex-col h-full">
+              {/* Logo区域 */}
+              <div className="p-6 border-b border-white/10">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                    <Sparkles className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-lg font-bold text-white">蓝的工作台</h1>
+                    <p className="text-xs text-blue-300/70">Blue Workbench</p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* 导航菜单 */}
+              <nav className="flex-1 p-4">
+                <ul className="space-y-2">
+                  <li>
+                    <Link href="/" className="nav-link">
+                      <Home className="w-5 h-5" />
+                      <span>仪表盘</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/projects" className="nav-link">
+                      <FolderKanban className="w-5 h-5" />
+                      <span>所有项目</span>
+                    </Link>
+                  </li>
+                </ul>
+              </nav>
+              
+              {/* 底部信息 */}
+              <div className="p-4 border-t border-white/10">
+                <div className="flex items-center space-x-2 text-blue-300/50 text-xs">
+                  <Activity className="w-4 h-4" />
+                  <span>实时同步中</span>
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                  </span>
                 </div>
               </div>
             </div>
-          </div>
-        </nav>
-        
-        {/* 主内容 */}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {children}
-        </main>
+          </aside>
+          
+          {/* 主内容区 */}
+          <main className="flex-1 ml-64 p-8">
+            {children}
+          </main>
+        </div>
       </body>
     </html>
   );

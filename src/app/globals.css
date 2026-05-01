@@ -1,27 +1,346 @@
 @import "tailwindcss";
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 255, 255, 255;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 15, 23, 42;
+  --background-end-rgb: 30, 58, 138;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+      135deg,
+      rgb(var(--background-start-rgb)) 0%,
+      rgb(var(--background-end-rgb)) 100%
+  );
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* 玻璃拟态效果 */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(59, 130, 246, 0.5);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
+}
+
+.glass-sidebar {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 导航链接 */
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  color: rgba(148, 163, 184, 0.9);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  background: rgba(59, 130, 246, 0.15);
+  color: white;
+}
+
+.nav-link.active {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(6, 182, 212, 0.2));
+  color: white;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+}
+
+/* 粒子背景动画 */
+.particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.particles::before,
+.particles::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.6), transparent);
+  border-radius: 50%;
+  animation: float 20s infinite ease-in-out;
+}
+
+.particles::before {
+  top: 10%;
+  left: 20%;
+  animation-delay: 0s;
+}
+
+.particles::after {
+  top: 60%;
+  right: 15%;
+  animation-delay: -5s;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.5), transparent);
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.6;
+  }
+  25% {
+    transform: translate(100px, -50px) scale(1.2);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(50px, 100px) scale(0.8);
+    opacity: 0.4;
+  }
+  75% {
+    transform: translate(-50px, 50px) scale(1.1);
+    opacity: 0.7;
+  }
+}
+
+/* 额外粒子元素 */
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.5), transparent);
+  border-radius: 50%;
+  animation: float-particle 25s infinite ease-in-out;
+}
+
+.particle:nth-child(1) { top: 20%; left: 70%; animation-delay: -2s; }
+.particle:nth-child(2) { top: 40%; left: 10%; animation-delay: -8s; background: radial-gradient(circle, rgba(236, 72, 153, 0.5), transparent); }
+.particle:nth-child(3) { top: 70%; left: 80%; animation-delay: -12s; }
+.particle:nth-child(4) { top: 85%; left: 30%; animation-delay: -18s; background: radial-gradient(circle, rgba(16, 185, 129, 0.4), transparent); }
+.particle:nth-child(5) { top: 30%; left: 50%; animation-delay: -6s; background: radial-gradient(circle, rgba(245, 158, 11, 0.4), transparent); }
+
+@keyframes float-particle {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0.5;
+  }
+  33% {
+    transform: translate(80px, -80px) rotate(120deg);
+    opacity: 0.8;
+  }
+  66% {
+    transform: translate(-40px, 60px) rotate(240deg);
+    opacity: 0.3;
+  }
+}
+
+/* 统计卡片数字动画 */
+.stat-number {
+  background: linear-gradient(135deg, #60a5fa, #22d3ee);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(59, 130, 246, 0.8));
+  }
+}
+
+/* 进度条渐变动画 */
+.progress-gradient {
+  background: linear-gradient(90deg, #3b82f6, #06b6d4, #8b5cf6);
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* 脉冲动画 */
+.pulse-dot {
+  animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-ring {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* 卡片hover发光效果 */
+.card-glow {
+  position: relative;
+}
+
+.card-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.5), rgba(6, 182, 212, 0.3), rgba(139, 92, 246, 0.4));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+  filter: blur(8px);
+}
+
+.card-glow:hover::before {
+  opacity: 1;
+}
+
+/* Kanban列颜色标识 */
+.kanban-todo { border-top: 3px solid #64748b; }
+.kanban-progress { border-top: 3px solid #3b82f6; }
+.kanban-testing { border-top: 3px solid #f59e0b; }
+.kanban-done { border-top: 3px solid #10b981; }
+
+/* 任务优先级条 */
+.priority-high { border-left: 3px solid #ef4444; }
+.priority-medium { border-left: 3px solid #f59e0b; }
+.priority-low { border-left: 3px solid #22c55e; }
+
+/* 状态标签脉冲 */
+.status-active {
+  animation: status-pulse 2s ease-in-out infinite;
+}
+
+@keyframes status-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+  }
+}
+
+/* 进度环 */
+.progress-ring {
+  transform: rotate(-90deg);
+}
+
+.progress-ring-circle {
+  transition: stroke-dashoffset 1s ease-in-out;
+}
+
+/* 渐变文字 */
+.gradient-text {
+  background: linear-gradient(135deg, #60a5fa 0%, #22d3ee 50%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 毛玻璃效果增强 */
+.frosted {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.5);
+}
+
+/* 页面切换动画 */
+.page-enter {
+  animation: page-enter 0.5s ease-out;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 卡片出现动画 */
+.card-appear {
+  animation: card-appear 0.4s ease-out backwards;
+}
+
+@keyframes card-appear {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 涟漪效果 */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.3), transparent 70%);
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.ripple:hover::after {
+  transform: scale(2);
+  opacity: 1;
 }
 
 @theme inline {

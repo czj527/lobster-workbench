@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
-import Link from 'next/link';
+import Link from 'next/link'
+import { ArrowLeft, FolderKanban, Clock, TrendingUp } from 'lucide-react'
 
 export default async function ProjectsPage() {
   const supabase = await createClient()
@@ -17,60 +18,125 @@ export default async function ProjectsPage() {
     'paused': '已暂停'
   }
 
+  // 计算统计数据
+  const stats = {
+    total: projects?.length || 0,
+    inProgress: projects?.filter(p => p.status === 'in_progress').length || 0,
+    completed: projects?.filter(p => p.status === 'completed').length || 0,
+    avgProgress: projects && projects.length > 0 
+      ? Math.round(projects.reduce((acc, p) => acc + (p.progress || 0), 0) / projects.length)
+      : 0
+  }
+
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">所有项目</h1>
-        <p className="text-gray-500 text-sm mt-1">共 {projects?.length || 0} 个项目</p>
+    <div className="space-y-8 page-enter">
+      {/* 页面标题 */}
+      <div className="flex items-center justify-between">
+        <div>
+          <Link href="/" className="flex items-center gap-2 text-slate-400 hover:text-white mb-4 transition-colors">
+            <ArrowLeft className="w-4 h-4" />
+            返回仪表盘
+          </Link>
+          <h1 className="text-3xl font-bold text-white flex items-center gap-3">
+            <FolderKanban className="w-8 h-8 text-blue-400" />
+            所有项目
+          </h1>
+          <p className="text-slate-400 mt-1">共 {stats.total} 个项目，平均进度 {stats.avgProgress}%</p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* 统计概览 */}
+      <div className="grid grid-cols-3 gap-4">
+        <div className="glass-card p-4 flex items-center gap-4">
+          <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+            <FolderKanban className="w-5 h-5 text-blue-400" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-white">{stats.total}</div>
+            <div className="text-xs text-slate-400">项目总数</div>
+          </div>
+        </div>
+        
+        <div className="glass-card p-4 flex items-center gap-4">
+          <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+            <TrendingUp className="w-5 h-5 text-green-400" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-green-400">{stats.inProgress}</div>
+            <div className="text-xs text-slate-400">进行中</div>
+          </div>
+        </div>
+        
+        <div className="glass-card p-4 flex items-center gap-4">
+          <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+            <TrendingUp className="w-5 h-5 text-emerald-400" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-emerald-400">{stats.completed}</div>
+            <div className="text-xs text-slate-400">已完成</div>
+          </div>
+        </div>
+      </div>
+
+      {/* 项目网格 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {projects && projects.length > 0 ? (
-          projects.map((project) => (
+          projects.map((project, index) => (
             <Link key={project.id} href={`/projects/${project.id}`}>
-              <div className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6 cursor-pointer">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-3">
-                    <span className="text-3xl">{project.icon || '📦'}</span>
+              <div 
+                className="glass-card p-6 cursor-pointer card-glow h-full"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500/30 to-purple-500/30 flex items-center justify-center text-3xl backdrop-blur-sm">
+                      {project.icon || '📦'}
+                    </div>
                     <div>
-                      <h2 className="font-semibold text-gray-900">{project.name}</h2>
-                      <p className="text-sm text-gray-500">{project.current_phase || '未开始'}</p>
+                      <h2 className="font-semibold text-lg text-white">{project.name}</h2>
+                      <p className="text-sm text-slate-400 flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {project.current_phase || '未开始'}
+                      </p>
                     </div>
                   </div>
-                  <span className={`text-xs px-2 py-1 rounded ${
-                    project.status === 'in_progress' ? 'bg-green-100 text-green-800' :
-                    project.status === 'planning' ? 'bg-blue-100 text-blue-800' :
-                    project.status === 'completed' ? 'bg-gray-100 text-gray-800' :
-                    'bg-yellow-100 text-yellow-800'
+                  <span className={`text-xs px-3 py-1 rounded-full ${
+                    project.status === 'in_progress' 
+                      ? 'bg-green-500/20 text-green-400 status-active' 
+                      : project.status === 'planning'
+                      ? 'bg-blue-500/20 text-blue-400'
+                      : project.status === 'completed'
+                      ? 'bg-emerald-500/20 text-emerald-400'
+                      : 'bg-amber-500/20 text-amber-400'
                   }`}>
                     {statusMap[project.status] || project.status}
                   </span>
                 </div>
                 
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm text-slate-300 mb-5 line-clamp-2">
                   {project.description || '暂无描述'}
                 </p>
                 
-                <div className="flex justify-between text-xs text-gray-500 mb-1">
-                  <span>进度</span>
-                  <span>{project.progress || 0}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="h-2 rounded-full transition-all"
-                    style={{ 
-                      width: `${project.progress || 0}%`,
-                      backgroundColor: project.color || '#6366F1'
-                    }}
-                  />
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-slate-400">进度</span>
+                    <span className="text-white font-medium">{project.progress || 0}%</span>
+                  </div>
+                  <div className="w-full h-3 bg-white/10 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full rounded-full progress-gradient"
+                      style={{ width: `${project.progress || 0}%` }}
+                    ></div>
+                  </div>
                 </div>
               </div>
             </Link>
           ))
         ) : (
-          <div className="col-span-full text-center py-12 text-gray-500">
-            <p>暂无项目</p>
-            <p className="text-sm mt-2">龙虾正在创建中...</p>
+          <div className="col-span-full glass-card p-16 text-center">
+            <div className="text-6xl mb-4">💙</div>
+            <p className="text-xl text-slate-300 mb-2">暂无项目</p>
+            <p className="text-slate-500">蓝正在创建中...</p>
           </div>
         )}
       </div>
