@@ -1,15 +1,16 @@
 /**
  * 日历同步 API Route
+ * 使用 Admin Client 绕过 RLS 限制
  */
 
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { NextResponse } from 'next/server'
 
 const COZE_CALENDAR_API = 'https://api.coze.com/v1/calendar'
 
 export async function POST(request: Request) {
   try {
-    const supabase = await createClient()
+    const supabase = createAdminClient()
     const body = await request.json().catch(() => ({}))
     const { days = 7 } = body
 

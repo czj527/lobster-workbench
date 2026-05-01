@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, FolderKanban, Clock, CheckCircle2, Pencil, Loader2, Search, Filter, X } from "lucide-react";
+import { ArrowLeft, FolderKanban, Clock, CheckCircle2, Pencil, Loader2, Search, Filter, X, Download, FileText } from "lucide-react";
 import KanbanBoard from "./KanbanBoard";
 import ProjectModal from "./ProjectModal";
 import { showToast, ToastContainer } from "./Toast";
 import StatsWidgets from "./StatsWidgets";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 
 interface Project {
   id: string;
@@ -53,28 +54,51 @@ const priorityFilters = [
   { value: "3", label: "🟢 低优先级" },
 ];
 
-const statusFilters = [
-  { value: "all", label: "全部状态" },
-  { value: "todo", label: "📋 待办" },
-  { value: "in_progress", label: "🔨 进行中" },
-  { value: "testing", label: "🔍 测试中" },
-  { value: "done", label: "✅ 已完成" },
-];
-
 export default function ProjectDetailClient({ project: initialProject, initialTasks }: ProjectDetailClientProps) {
   const [project, setProject] = useState<Project>(initialProject);
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [projectModalOpen, setProjectModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [exporting, setExporting] = useState(false);
   
   // 筛选状态
   const [searchQuery, setSearchQuery] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [showFilters, setShowFilters] = useState(false);
-  const [viewMode, setViewMode] = useState<"kanban" | "list">("kanban");
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://wotpzpegbgpqzxesqcas.supabase.co";
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "sb_publishable_JGFZUvYJ3I7PB1n-bAD8Qw_AFBRVPVK";
+
+  // 导出报告
+  const handleExportReport = async () => {
+    setExporting(true);
+    try {
+      const response = await fetch(`/api/reports?project_id=${project.id}`);
+      if (!response.ok) throw new Error("导出失败");
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `project-${project.name}-report.md`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      
+      showToast("报告导出成功", "success");
+    } catch (error) {
+      console.error("导出报告失败:", error);
+      showToast("导出失败，请重试", "error");
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  // 键盘快捷键
+  useKeyboardShortcuts({
+    onExport: handleExportReport,
+  });
 
   const apiCall = async (method: string, endpoint: string, body?: object) => {
     const res = await fetch(`${supabaseUrl}/rest/v1/${endpoint}`, {
@@ -234,64 +258,81 @@ export default function ProjectDetailClient({ project: initialProject, initialTa
                 </div>
               </div>
               
-              {/* 进度环 */}
-              <div className="relative w-24 h-24 md:w-32 md:h-32 flex-shrink-0">
-                <svg className="progress-ring w-full h-full">
-                  <circle
-                    cx="48"
-                    cy="48"
-                    r="40"
-                    fill="none"
-                    stroke="rgba(148,163,184,0.2)"
-                    strokeWidth="6"
-                    className="md:hidden"
-                  />
-                  <circle
-                    cx="64"
-                    cy="64"
-                    r="45"
-                    fill="none"
-                    stroke="rgba(148,163,184,0.2)"
-                    strokeWidth="8"
-                    className="hidden md:block"
-                  />
-                  <circle
-                    className="progress-ring-circle"
-                    cx="48"
-                    cy="48"
-                    r="40"
-                    fill="none"
-                    stroke="url(#progressGradient)"
-                    strokeWidth="6"
-                    strokeLinecap="round"
-                    strokeDasharray={2 * Math.PI * 40}
-                    strokeDashoffset={2 * Math.PI * 40 - (progressAngle / 360) * 2 * Math.PI * 40}
-                    style={{ display: "none" }}
-                  />
-                  <circle
-                    className="progress-ring-circle hidden md:block"
-                    cx="64"
-                    cy="64"
-                    r="45"
-                    fill="none"
-                    stroke="url(#progressGradient)"
-                    strokeWidth="8"
-                    strokeLinecap="round"
-                    strokeDasharray={circumference}
-                    strokeDashoffset={strokeDashoffset}
-                  />
-                  <defs>
-                    <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="var(--progress-start)" />
-                      <stop offset="50%" stopColor="var(--progress-mid)" />
-                      <stop offset="100%" stopColor="var(--progress-end)" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-xl md:text-3xl font-bold gradient-text">{project.progress}%</div>
-                    <div className="text-xs text-theme-muted hidden md:block">完成度</div>
+              <div className="flex items-center gap-3">
+                {/* 导出报告按钮 */}
+                <button
+                  onClick={handleExportReport}
+                  disabled={exporting}
+                  className="flex items-center gap-2 px-3 py-2 text-sm bg-theme-accent/10 hover:bg-theme-accent/20 text-theme-accent rounded-lg transition-colors disabled:opacity-50"
+                  title="导出报告 (Ctrl+E)"
+                >
+                  {exporting ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4" />
+                  )}
+                  <span className="hidden sm:inline">导出报告</span>
+                </button>
+
+                {/* 进度环 */}
+                <div className="relative w-20 h-20 md:w-28 md:h-28 flex-shrink-0">
+                  <svg className="progress-ring w-full h-full -rotate-90">
+                    <circle
+                      cx="40"
+                      cy="40"
+                      r="35"
+                      fill="none"
+                      stroke="rgba(148,163,184,0.2)"
+                      strokeWidth="5"
+                      className="md:hidden"
+                    />
+                    <circle
+                      cx="56"
+                      cy="56"
+                      r="50"
+                      fill="none"
+                      stroke="rgba(148,163,184,0.2)"
+                      strokeWidth="6"
+                      className="hidden md:block"
+                    />
+                    <circle
+                      className="progress-ring-circle"
+                      cx="40"
+                      cy="40"
+                      r="35"
+                      fill="none"
+                      stroke="url(#progressGradient)"
+                      strokeWidth="5"
+                      strokeLinecap="round"
+                      strokeDasharray={2 * Math.PI * 35}
+                      strokeDashoffset={2 * Math.PI * 35 - (progressAngle / 360) * 2 * Math.PI * 35}
+                      style={{ display: "none" }}
+                    />
+                    <circle
+                      className="progress-ring-circle hidden md:block"
+                      cx="56"
+                      cy="56"
+                      r="50"
+                      fill="none"
+                      stroke="url(#progressGradient)"
+                      strokeWidth="6"
+                      strokeLinecap="round"
+                      strokeDasharray={circumference}
+                      strokeDashoffset={strokeDashoffset}
+                    />
+                    <defs>
+                      <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="var(--progress-start)" />
+                        <stop offset="50%" stopColor="var(--progress-mid)" />
+                        <stop offset="100%" stopColor="var(--progress-end)" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="text-lg md:text-2xl font-bold gradient-text">{project.progress}%</div>
+                      <div className="text-[10px] md:text-xs text-theme-muted hidden md:block">完成度</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -384,7 +425,10 @@ export default function ProjectDetailClient({ project: initialProject, initialTa
         {/* 项目描述 */}
         {project.description && (
           <div className="glass-card p-4 md:p-6">
-            <h2 className="text-base md:text-lg font-semibold text-theme-primary mb-3 md:mb-4">📝 项目描述</h2>
+            <h2 className="text-base md:text-lg font-semibold text-theme-primary mb-3 md:mb-4 flex items-center gap-2">
+              <FileText className="w-4 h-4 text-theme-accent" />
+              项目描述
+            </h2>
             <p className="text-sm md:text-base text-theme-secondary whitespace-pre-wrap leading-relaxed break-words">{project.description}</p>
           </div>
         )}

@@ -1,9 +1,10 @@
 /**
  * GitHub项目状态同步 API Route
  * 从GitHub API获取仓库信息
+ * 使用 Admin Client 绕过 RLS 限制
  */
 
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { NextResponse } from 'next/server'
 
 const GITHUB_API = 'https://api.github.com'
@@ -49,7 +50,6 @@ interface GitHubRepoWithActivity extends GitHubRepo {
 
 export async function GET() {
   try {
-    const supabase = await createClient()
     const repos = await fetchGitHubRepos()
 
     const reposWithActivity = await Promise.all(
@@ -84,7 +84,7 @@ export async function GET() {
 
 export async function POST() {
   try {
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     const repos = await fetchGitHubRepos()
     const reposWithActivity = await Promise.all(
