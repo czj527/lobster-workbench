@@ -41,26 +41,26 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     'todo': { 
       label: '📋 待办', 
       icon: <AlertCircle className="w-4 h-4" />,
-      color: 'text-slate-400',
-      bg: 'bg-slate-500/20'
+      color: 'text-slate-500 dark:text-slate-400',
+      bg: 'bg-slate-100 dark:bg-slate-500/20'
     },
     'in_progress': { 
       label: '🔨 进行中', 
       icon: <PlayCircle className="w-4 h-4" />,
-      color: 'text-blue-400',
-      bg: 'bg-blue-500/20'
+      color: 'text-sky-500 dark:text-blue-400',
+      bg: 'bg-sky-100 dark:bg-blue-500/20'
     },
     'testing': { 
       label: '🔍 测试中', 
       icon: <Clock className="w-4 h-4" />,
-      color: 'text-amber-400',
-      bg: 'bg-amber-500/20'
+      color: 'text-amber-500 dark:text-amber-400',
+      bg: 'bg-amber-100 dark:bg-amber-500/20'
     },
     'done': { 
       label: '✅ 已完成', 
       icon: <CheckCircle2 className="w-4 h-4" />,
-      color: 'text-green-400',
-      bg: 'bg-green-500/20'
+      color: 'text-green-500 dark:text-green-400',
+      bg: 'bg-green-100 dark:bg-green-500/20'
     }
   }
   
@@ -80,7 +80,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     <div className="space-y-8 page-enter">
       {/* 返回链接和标题 */}
       <div>
-        <Link href="/projects" className="flex items-center gap-2 text-slate-400 hover:text-white mb-4 transition-colors">
+        <Link href="/projects" className="flex items-center gap-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white mb-4 transition-colors">
           <ArrowLeft className="w-4 h-4" />
           返回项目列表
         </Link>
@@ -88,23 +88,23 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         <div className="glass-card p-8">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-5">
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500/30 to-purple-500/30 flex items-center justify-center text-5xl backdrop-blur-sm">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-sky-400/30 to-cyan-400/30 dark:from-blue-500/30 dark:to-purple-500/30 flex items-center justify-center text-5xl backdrop-blur-sm">
                 {project.icon || '📦'}
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-white mb-2">{project.name}</h1>
-                <p className="text-slate-400 flex items-center gap-2">
+                <h1 className="text-3xl font-bold text-slate-700 dark:text-white mb-2">{project.name}</h1>
+                <p className="text-slate-500 dark:text-slate-400 flex items-center gap-2">
                   <Clock className="w-4 h-4" />
                   {project.current_phase || '未开始'}
                 </p>
                 <span className={`inline-block mt-3 text-sm px-4 py-1 rounded-full ${
                   project.status === 'in_progress' 
-                    ? 'bg-green-500/20 text-green-400 status-active' 
+                    ? 'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-400 status-active' 
                     : project.status === 'planning'
-                    ? 'bg-blue-500/20 text-blue-400'
+                    ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400'
                     : project.status === 'completed'
-                    ? 'bg-emerald-500/20 text-emerald-400'
-                    : 'bg-amber-500/20 text-amber-400'
+                    ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400'
+                    : 'bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400'
                 }`}>
                   {statusMap[project.status] || project.status}
                 </span>
@@ -119,7 +119,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                   cy="64"
                   r="45"
                   fill="none"
-                  stroke="rgba(255,255,255,0.1)"
+                  stroke="rgba(148,163,184,0.2)"
                   strokeWidth="8"
                 />
                 <circle
@@ -136,8 +136,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 />
                 <defs>
                   <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#3b82f6" />
-                    <stop offset="50%" stopColor="#06b6d4" />
+                    <stop offset="0%" stopColor="#0ea5e9" />
+                    <stop offset="50%" stopColor="#22d3ee" />
                     <stop offset="100%" stopColor="#8b5cf6" />
                   </linearGradient>
                 </defs>
@@ -145,7 +145,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
                   <div className="text-3xl font-bold gradient-text">{project.progress || 0}%</div>
-                  <div className="text-xs text-slate-400">完成度</div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400">完成度</div>
                 </div>
               </div>
             </div>
@@ -155,8 +155,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
       {/* Kanban看板 */}
       <div>
-        <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
-          <FolderKanban className="w-6 h-6 text-cyan-400" />
+        <h2 className="text-xl font-semibold text-slate-700 dark:text-white mb-6 flex items-center gap-2">
+          <FolderKanban className="w-6 h-6 text-cyan-500 dark:text-cyan-400" />
           任务看板
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -183,24 +183,24 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                         key={task.id} 
                         className={`glass p-4 rounded-lg priority-${task.priority || 'low'}`}
                       >
-                        <p className="text-sm font-medium text-white mb-2">{task.title}</p>
+                        <p className="text-sm font-medium text-slate-700 dark:text-white mb-2">{task.title}</p>
                         {task.description && (
-                          <p className="text-xs text-slate-400 line-clamp-2 mb-2">
+                          <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-2">
                             {task.description}
                           </p>
                         )}
                         <div className="flex items-center justify-between text-xs">
                           {task.due_date && (
-                            <span className="text-slate-500 flex items-center gap-1">
+                            <span className="text-slate-400 dark:text-slate-500 flex items-center gap-1">
                               <Clock className="w-3 h-3" />
                               {task.due_date}
                             </span>
                           )}
                           {task.priority && (
                             <span className={`${
-                              task.priority === 'high' ? 'text-red-400' :
-                              task.priority === 'medium' ? 'text-amber-400' :
-                              'text-green-400'
+                              task.priority === 'high' ? 'text-red-500' :
+                              task.priority === 'medium' ? 'text-amber-500' :
+                              'text-green-500'
                             }`}>
                               {task.priority === 'high' ? '🔴 高' : 
                                task.priority === 'medium' ? '🟡 中' : '🟢 低'}
@@ -210,7 +210,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                       </div>
                     ))
                   ) : (
-                    <div className="text-center py-8 text-slate-500">
+                    <div className="text-center py-8 text-slate-400 dark:text-slate-500">
                       <p className="text-sm">暂无任务</p>
                     </div>
                   )}
@@ -224,13 +224,13 @@ export default async function ProjectDetailPage({ params }: PageProps) {
       {/* 项目描述 */}
       {project.description && (
         <div className="glass-card p-6">
-          <h2 className="text-lg font-semibold text-white mb-4">📝 项目描述</h2>
-          <p className="text-slate-300 whitespace-pre-wrap leading-relaxed">{project.description}</p>
+          <h2 className="text-lg font-semibold text-slate-700 dark:text-white mb-4">📝 项目描述</h2>
+          <p className="text-slate-600 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">{project.description}</p>
         </div>
       )}
       
       {/* 更新时间 */}
-      <div className="text-center text-sm text-slate-500">
+      <div className="text-center text-sm text-slate-400 dark:text-slate-500">
         最后更新: {new Date(project.updated_at).toLocaleString('zh-CN')}
       </div>
     </div>
