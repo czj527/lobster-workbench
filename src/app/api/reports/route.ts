@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
     }
 
     const supabase = createAdminClient()
+    console.log('Supabase client created successfully')
 
     // 获取项目信息
     const { data: project, error: projectError } = await supabase
@@ -24,23 +25,40 @@ export async function GET(request: NextRequest) {
       .eq('id', projectId)
       .single()
 
-    if (projectError || !project) {
+    if (projectError) {
+      console.error('Project error:', projectError)
+      return NextResponse.json({ error: '项目不存在', details: projectError.message }, { status: 404 })
+    }
+
+    if (!project) {
       return NextResponse.json({ error: '项目不存在' }, { status: 404 })
     }
 
+    console.log('Project found:', project.name)
+
     // 获取任务列表
-    const { data: tasks } = await supabase
+    const { data: tasks, error: tasksError } = await supabase
       .from('tasks')
       .select('*')
       .eq('project_id', projectId)
       .order('sort_order', { ascending: true })
 
+    if (tasksError) {
+      console.error('Tasks error:', tasksError)
+    }
+
     // 获取活动日志
-    const { data: activities } = await supabase
+    const { data: activities, error: activitiesError } = await supabase
       .from('activity_log')
       .select('*')
       .order('created_at', { ascending: false })
       .limit(20)
+
+    if (activitiesError) {
+      console.error('Activities error:', activitiesError)
+    }
+
+    console.log('Fetched tasks:', tasks?.length, 'activities:', activities?.length)
 
     // 生成 Markdown 报告
     const markdown = generateMarkdownReport(project, tasks || [], activities || [])
@@ -52,9 +70,9 @@ export async function GET(request: NextRequest) {
         'Content-Disposition': `attachment; filename="project-${project.name}-report.md"`,
       },
     })
-  } catch (error) {
+  } catch (error: any) {
     console.error('生成报告失败:', error)
-    return NextResponse.json({ error: '生成报告失败', details: String(error) }, { status: 500 })
+    return NextResponse.json({ error: '生成报告失败', details: error?.message || String(error) }, { status: 500 })
   }
 }
 
