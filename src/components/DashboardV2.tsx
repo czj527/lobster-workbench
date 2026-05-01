@@ -9,6 +9,7 @@ import CalendarWidget from './CalendarWidget'
 import GitHubStatus from './GitHubStatus'
 import QuickAdd from './QuickAdd'
 import StatsWidgets from './StatsWidgets'
+import LiveStatus from './LiveStatus'
 import { createClient } from '@/lib/supabase/client'
 
 interface Project {
@@ -46,7 +47,7 @@ interface DashboardV2Props {
 }
 
 export default function DashboardV2({ projects: initialProjects, activities: initialActivities, tasks: initialTasks }: DashboardV2Props) {
-      const [projects, setProjects] = useState(initialProjects)
+  const [projects, setProjects] = useState(initialProjects)
   const [activities, setActivities] = useState(initialActivities)
   const [tasks, setTasks] = useState(initialTasks)
   const [quickAddOpen, setQuickAddOpen] = useState(false)
@@ -122,9 +123,14 @@ export default function DashboardV2({ projects: initialProjects, activities: ini
         </div>
       </div>
 
+      {/* 实时状态卡片 - 放在欢迎语下方 */}
+      <div className="card-appear" style={{ animationDelay: '50ms' }}>
+        <LiveStatus />
+      </div>
+
       {/* 今日概览卡片 */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-        <div className="glass-card p-4 md:p-6 card-appear" style={{ animationDelay: '0ms' }}>
+        <div className="glass-card p-4 md:p-6 card-appear" style={{ animationDelay: '100ms' }}>
           <div className="flex items-center justify-between mb-3">
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-sky-500/20 flex items-center justify-center">
               <FolderKanban className="w-5 h-5 md:w-6 md:h-6 text-sky-500" />
@@ -135,7 +141,7 @@ export default function DashboardV2({ projects: initialProjects, activities: ini
           <div className="text-xs md:text-sm text-theme-secondary mt-1">项目总数</div>
         </div>
 
-        <div className="glass-card p-4 md:p-6 card-appear" style={{ animationDelay: '100ms' }}>
+        <div className="glass-card p-4 md:p-6 card-appear" style={{ animationDelay: '200ms' }}>
           <div className="flex items-center justify-between mb-3">
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
               <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-green-500" />
@@ -146,7 +152,7 @@ export default function DashboardV2({ projects: initialProjects, activities: ini
           <div className="text-xs md:text-sm text-theme-secondary mt-1">活跃项目</div>
         </div>
 
-        <div className="glass-card p-4 md:p-6 card-appear" style={{ animationDelay: '200ms' }}>
+        <div className="glass-card p-4 md:p-6 card-appear" style={{ animationDelay: '300ms' }}>
           <div className="flex items-center justify-between mb-3">
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center">
               <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6 text-emerald-500" />
@@ -157,7 +163,7 @@ export default function DashboardV2({ projects: initialProjects, activities: ini
           <div className="text-xs md:text-sm text-theme-secondary mt-1">已完成</div>
         </div>
 
-        <div className="glass-card p-4 md:p-6 card-appear" style={{ animationDelay: '300ms' }}>
+        <div className="glass-card p-4 md:p-6 card-appear" style={{ animationDelay: '400ms' }}>
           <div className="flex items-center justify-between mb-3">
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
               <Activity className="w-5 h-5 md:w-6 md:h-6 text-purple-500" />
@@ -173,7 +179,7 @@ export default function DashboardV2({ projects: initialProjects, activities: ini
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
         {/* 左侧 - AI 摘要和智能建议 */}
         <div className="lg:col-span-4 space-y-4 md:space-y-6">
-          <div className="card-appear" style={{ animationDelay: '350ms' }}>
+          <div className="card-appear" style={{ animationDelay: '450ms' }}>
             {projects.length > 0 ? (
               <AISummary 
                 projectId={projects[0].id} 
@@ -188,19 +194,19 @@ export default function DashboardV2({ projects: initialProjects, activities: ini
             )}
           </div>
 
-          <div className="card-appear" style={{ animationDelay: '400ms' }}>
+          <div className="card-appear" style={{ animationDelay: '500ms' }}>
             <TaskSuggestions compact={true} />
           </div>
         </div>
 
         {/* 中间 - 日历和快速添加 */}
         <div className="lg:col-span-4 space-y-4 md:space-y-6">
-          <div className="card-appear" style={{ animationDelay: '450ms' }}>
+          <div className="card-appear" style={{ animationDelay: '550ms' }}>
             <CalendarWidget />
           </div>
 
           {/* 快速添加预览 */}
-          <div className="glass-card p-4 card-appear" style={{ animationDelay: '500ms' }}>
+          <div className="glass-card p-4 card-appear" style={{ animationDelay: '600ms' }}>
             <div className="flex items-center gap-2 mb-3">
               <Sparkles className="w-5 h-5 text-theme-accent" />
               <span className="font-semibold text-theme-primary">快速添加</span>
@@ -216,7 +222,7 @@ export default function DashboardV2({ projects: initialProjects, activities: ini
           </div>
 
           {/* GitHub 状态 */}
-          <div className="card-appear" style={{ animationDelay: '550ms' }}>
+          <div className="card-appear" style={{ animationDelay: '650ms' }}>
             <GitHubStatus compact={true} />
           </div>
         </div>
@@ -224,7 +230,7 @@ export default function DashboardV2({ projects: initialProjects, activities: ini
         {/* 右侧 - 任务和时间线 */}
         <div className="lg:col-span-4 space-y-4 md:space-y-6">
           {/* 最近任务 */}
-          <div className="glass-card p-4 md:p-6 card-appear" style={{ animationDelay: '600ms' }}>
+          <div className="glass-card p-4 md:p-6 card-appear" style={{ animationDelay: '700ms' }}>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-base font-semibold text-theme-primary flex items-center gap-2">
                 <Clock className="w-4 h-4 text-sky-500" />
@@ -266,7 +272,7 @@ export default function DashboardV2({ projects: initialProjects, activities: ini
           </div>
 
           {/* 活动时间线 */}
-          <div className="glass-card p-4 md:p-6 card-appear" style={{ animationDelay: '650ms' }}>
+          <div className="glass-card p-4 md:p-6 card-appear" style={{ animationDelay: '750ms' }}>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-base font-semibold text-theme-primary flex items-center gap-2">
                 <Activity className="w-4 h-4 text-purple-500" />
@@ -300,7 +306,7 @@ export default function DashboardV2({ projects: initialProjects, activities: ini
       </div>
 
       {/* 项目列表 */}
-      <div className="card-appear" style={{ animationDelay: '700ms' }}>
+      <div className="card-appear" style={{ animationDelay: '800ms' }}>
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4 md:mb-6">
           <h2 className="text-lg md:text-xl font-semibold text-theme-primary flex items-center gap-2">
             <FolderKanban className="w-5 h-5 md:w-6 md:h-6 text-sky-500" />
@@ -317,7 +323,7 @@ export default function DashboardV2({ projects: initialProjects, activities: ini
               <Link key={project.id} href={`/projects/${project.id}`}>
                 <div 
                   className="glass-card p-4 md:p-6 cursor-pointer card-glow h-full"
-                  style={{ animationDelay: `${800 + index * 100}ms` }}
+                  style={{ animationDelay: `${900 + index * 100}ms` }}
                 >
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-3xl md:text-4xl">{project.icon || '📦'}</span>

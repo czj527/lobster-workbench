@@ -26,7 +26,7 @@ export default function Sidebar({ isOpen, isMobile, onClose }: SidebarProps) {
   };
 
   const Overlay = () => (
-    <div className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`} onClick={onClose} />
+    <div className={`fixed inset-0 bg-black/50 z-[45] transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`} onClick={onClose} />
   );
 
   return (
@@ -67,10 +67,15 @@ export default function Sidebar({ isOpen, isMobile, onClose }: SidebarProps) {
             </ul>
           </nav>
 
+          {/* 移动端主题切换 - 在抽屉内添加一个明显的入口 */}
           <div className="p-3 md:p-4 border-t border-slate-200/30 dark:border-white/10">
             <div className="flex items-center justify-between">
               <RealtimeIndicator />
-              <ThemeToggle />
+              {/* 移动端：显示更明显的文字提示 */}
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-theme-muted md:hidden">主题</span>
+                <ThemeToggle />
+              </div>
             </div>
           </div>
         </div>
