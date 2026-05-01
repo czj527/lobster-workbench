@@ -139,3 +139,12 @@ Vercel 会自动检测并部署。
 - 看板功能
 - AI 摘要集成
 - 日历同步
+
+### 2026-05-01 (下午)
+- ✅ 全面主题系统修复
+  - 替换所有硬编码 Tailwind 颜色为 CSS 变量
+  - 进度条背景色适配：bg-slate-200/bg-white/10 → bg-[var(--list-item-bg)]
+  - 文字颜色适配：text-white/text-slate-*/text-gray-* → text-[var(--text-primary/secondary/muted)]
+  - 边框颜色适配：border-slate-*/border-white/10 → border-[var(--border-light)]
+  - 保留状态颜色（green/red/amber）、品牌色（GitHub黑）等语义性颜色
+  - 现在暗色/亮色主题视觉差异明显
