@@ -17,16 +17,24 @@ export async function GET(request: Request) {
   const { data: events, error } = await supabase
     .from('events')
     .select('*')
-    .gte('payload->event_date', date)
-    .lte('payload->event_date', endDateStr)
+    .eq('source', 'coze-calendar')
     .in('event_type', ['study', 'work', 'sync'])
-    .order('payload->>event_date', { ascending: true })
-    .order('payload->>start_time', { ascending: true })
+    .order('created_at', { ascending: true })
 
   if (error) {
     console.error('获取日程失败:', error)
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  return NextResponse.json({ events: events || [] })
+  // 过滤日期范围
+  const filteredEvents = (events || []).filter((event: any) => {
+    const eventDate = event.payload?.event_date
+    return eventDate >= date && eventDate <= endDateStr
+  }).sort((a: any, b: any) => {
+    const dateCompare = (a.payload?.event_date || '').localeCompare(b.payload?.event_date || '')
+    if (dateCompare !== 0) return dateCompare
+    return (a.payload?.start_time || '').localeCompare(b.payload?.start_time || '')
+  })
+
+  return NextResponse.json({ events: filteredEvents })
 }
