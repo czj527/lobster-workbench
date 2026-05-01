@@ -8,7 +8,7 @@ import HamburgerMenu from "./HamburgerMenu";
 import NotificationCenter from "./NotificationCenter";
 import ShortcutHelp from "./ShortcutHelp";
 import ThemeToggle from "./ThemeToggle";
-import Search from "lucide-react";
+import { Search, SearchIcon } from "lucide-react";
 
 interface AppShellProps {
   children: React.ReactNode;

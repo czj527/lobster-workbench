@@ -131,23 +131,23 @@ function generateMarkdownReport(
   githubRepos: GitHubRepo[]
 ): string {
   const statusMap: Record<string, string> = {
-    planning: '📋 规划中',
-    in_progress: '🚀 进行中',
-    completed: '✅ 已完成',
-    paused: '⏸️ 已暂停',
+    planning: '规划中',
+    in_progress: '进行中',
+    completed: '已完成',
+    paused: '已暂停',
   }
 
   const priorityMap: Record<number, string> = {
-    1: '🔴 高优先级',
-    2: '🟡 中优先级',
-    3: '🟢 低优先级',
+    1: '高优先级',
+    2: '中优先级',
+    3: '低优先级',
   }
 
   const taskStatusMap: Record<string, string> = {
-    todo: '📋 待办',
-    in_progress: '🔨 进行中',
-    testing: '🔍 测试中',
-    done: '✅ 已完成',
+    todo: '待办',
+    in_progress: '进行中',
+    testing: '测试中',
+    done: '已完成',
   }
 
   const tasksByStatus = {
@@ -165,11 +165,13 @@ function generateMarkdownReport(
     minute: '2-digit',
   })
 
-  return `# ${project.icon || '📦'} ${project.name}
+  const icon = project.icon || '📦'
+  
+  let markdown = `# ${icon} ${project.name}
 
 > 生成时间: ${now}
 
-## 📊 项目概览
+## 项目概览
 
 | 属性 | 值 |
 |------|-----|
@@ -179,9 +181,17 @@ function generateMarkdownReport(
 | **创建时间** | ${new Date(project.created_at).toLocaleString('zh-CN')} |
 | **最后更新** | ${new Date(project.updated_at).toLocaleString('zh-CN')} |
 
-${project.description ? `\n## 📝 项目描述\n\n${project.description}\n` : ''}
+`
 
-## 📈 任务统计
+  if (project.description) {
+    markdown += `## 项目描述
+
+${project.description}
+
+`
+  }
+
+  markdown += `## 任务统计
 
 - **总计**: ${tasks.length} 个任务
 - **待办**: ${tasksByStatus.todo.length} 个
@@ -189,43 +199,67 @@ ${project.description ? `\n## 📝 项目描述\n\n${project.description}\n` : '
 - **测试中**: ${tasksByStatus.testing.length} 个
 - **已完成**: ${tasksByStatus.done.length} 个
 
-${tasks.length > 0 ? `
+`
 
-## ✅ 任务列表
+  if (tasks.length > 0) {
+    markdown += `## 任务列表
 
-${tasks.map(task => {
-  return `### ${taskStatusMap[task.status] || task.status} ${priorityMap[task.priority] || ''}
+`
+    tasks.forEach(task => {
+      markdown += `### ${taskStatusMap[task.status] || task.status} ${priorityMap[task.priority] || ''}
 
 - **标题**: ${task.title}
-${task.description ? `- **描述**: ${task.description}` : ''}
-${task.due_date ? `- **截止日期**: ${new Date(task.due_date).toLocaleDateString('zh-CN')}` : ''}
-- **创建时间**: ${new Date(task.created_at).toLocaleString('zh-CN')}
-
 `
-}).join('---\n\n')}` : '\n> 暂无任务\n'}
-
-${githubRepos.length > 0 ? `
-
-## 🐙 GitHub 仓库
-
-${githubRepos.map(repo => `- **[${repo.name}](${repo.html_url})**
-  - ${repo.description || '暂无描述'}
-  - ⭐ ${repo.stargazers_count} | 🍴 ${repo.forks_count} | ${repo.language || '未知语言'}
-  - 最后更新: ${new Date(repo.pushed_at).toLocaleString('zh-CN')}").join('\n\n')}
-
-` : ''}
-
-${activities.length > 0 ? `
-
-## 📋 活动日志
-
-${activities.map(activity => `- ${activity.content}
-  - ${new Date(activity.created_at).toLocaleString('zh-CN')}`).join('\n')}
-
-` : ''}
+      if (task.description) {
+        markdown += `- **描述**: ${task.description}
+`
+      }
+      if (task.due_date) {
+        markdown += `- **截止日期**: ${new Date(task.due_date).toLocaleDateString('zh-CN')}
+`
+      }
+      markdown += `- **创建时间**: ${new Date(task.created_at).toLocaleString('zh-CN')}
 
 ---
-
-*由 💙 蓝的工作台 自动生成*
 `
+    })
+  } else {
+    markdown += `> 暂无任务
+
+`
+  }
+
+  if (githubRepos.length > 0) {
+    markdown += `## GitHub 仓库
+
+`
+    githubRepos.forEach(repo => {
+      markdown += `- **${repo.name}** (${repo.html_url})
+  - ${repo.description || '暂无描述'}
+  - 星标: ${repo.stargazers_count} | 分支: ${repo.forks_count} | 语言: ${repo.language || '未知'}
+  - 最后更新: ${new Date(repo.pushed_at).toLocaleString('zh-CN')}
+
+`
+    })
+  }
+
+  if (activities.length > 0) {
+    markdown += `## 活动日志
+
+`
+    activities.forEach(activity => {
+      markdown += `- ${activity.content}
+  - ${new Date(activity.created_at).toLocaleString('zh-CN')}
+`
+    })
+    markdown += `
+`
+  }
+
+  markdown += `---
+
+*由 蓝的工作台 自动生成*
+`
+
+  return markdown
 }
