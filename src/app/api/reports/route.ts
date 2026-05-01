@@ -16,7 +16,6 @@ export async function GET(request: NextRequest) {
     }
 
     const supabase = createAdminClient()
-    console.log('Supabase client created successfully')
 
     // 获取项目信息
     const { data: project, error: projectError } = await supabase
@@ -25,49 +24,36 @@ export async function GET(request: NextRequest) {
       .eq('id', projectId)
       .single()
 
-    if (projectError) {
-      console.error('Project error:', projectError)
-      return NextResponse.json({ error: '项目不存在', details: projectError.message }, { status: 404 })
-    }
-
-    if (!project) {
+    if (projectError || !project) {
       return NextResponse.json({ error: '项目不存在' }, { status: 404 })
     }
 
-    console.log('Project found:', project.name)
-
     // 获取任务列表
-    const { data: tasks, error: tasksError } = await supabase
+    const { data: tasks } = await supabase
       .from('tasks')
       .select('*')
       .eq('project_id', projectId)
       .order('sort_order', { ascending: true })
 
-    if (tasksError) {
-      console.error('Tasks error:', tasksError)
-    }
-
     // 获取活动日志
-    const { data: activities, error: activitiesError } = await supabase
+    const { data: activities } = await supabase
       .from('activity_log')
       .select('*')
       .order('created_at', { ascending: false })
       .limit(20)
 
-    if (activitiesError) {
-      console.error('Activities error:', activitiesError)
-    }
-
-    console.log('Fetched tasks:', tasks?.length, 'activities:', activities?.length)
-
     // 生成 Markdown 报告
     const markdown = generateMarkdownReport(project, tasks || [], activities || [])
+
+    // 编码文件名
+    const filename = `project-${project.name}-report.md`
+    const encodedFilename = encodeURIComponent(filename)
 
     // 返回 Markdown 文件
     return new NextResponse(markdown, {
       headers: {
         'Content-Type': 'text/markdown; charset=utf-8',
-        'Content-Disposition': `attachment; filename="project-${project.name}-report.md"`,
+        'Content-Disposition': `attachment; filename*=UTF-8''${encodedFilename}`,
       },
     })
   } catch (error: any) {
